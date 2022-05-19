@@ -3,9 +3,12 @@ class SessionsController < ApplicationController
     end
 
     def create
-        @user = user.find_by({"email" => params["email"] })
+        @user = User.find_by({"email" => params["email"] })
         if @user
-            if @user["password"] == params["password"]
+            if BCrypt::Password.new(@user["password"]) == params["password"]
+                # cookies["monster"] = "Me like cookies"
+                session["user_id"] = @user["id"]
+
                 flash["notice"] = "Welcome."
                 redirect_to "/companies"
             else 
@@ -18,3 +21,5 @@ class SessionsController < ApplicationController
         end 
     end
 end 
+
+
